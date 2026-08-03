@@ -1,4 +1,5 @@
-<img width="30%" alt="Ophelia R&D logo" src="_assets/ophelia_rnd_logo.png" />
+<img height="80px" alt="Lilypond logo" src="_assets/lilypond_logo.png" style="margin-right: .9rem"/>
+<img height="80px" alt="Ophelia R&D logo" src="_assets/ophelia_rnd_logo.png" />
 
 ---
 
