@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lilypond"
+description = "Intuitive visualization tool for high-dimensional data using Self-Organizing Maps."
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [{name = "Mate Balogh", email = "matebalogh@ophelia-rnd.dev"}]
+maintainers = [{name = "Mate Balogh", email = "matebalogh@ophelia-rnd.dev"}]
+license = "Apache-2.0"
+dynamic = ["version"]
+
+# Core dependencies installed when users run `pip install my-library`
+dependencies = [
+    "numpy",
+    "plotly",
+    "minisom"
+]
+
+# Optional/development dependencies installed via `pip install -e .[dev]`
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "jupyter",
+    "scikit-learn",
+]
+
+[tool.setuptools.dynamic]
+version = { attr = "lilypond.__version__" }
