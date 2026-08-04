@@ -14,22 +14,67 @@ adding nature-inspired visual enhancements to standard Self-Organizing Map plots
 
 This repository is a successor of the [Matplotlib](https://matplotlib.org)-based prototype library developed at [matthew-balogh/lilypond](https://github.com/matthew-balogh/lilypond).
 
-## Quick Start
+
+## Installation
 
 ```
 pip install git+https://github.com/ophelia-rnd/lilypond
 ```
 
+## Quick Start
+
 ```python
 from lilypond import Basin
-# Given dataset X
+# given dataset X
 
 # prepare for the pond with a `Basin`
 basin = Basin.from_data(X, random_seed=42, verbose=True).prepare()
 
 # display the legacy visualization
-basin.legacy_pond.visualize_distance_map();
-
-# display the enhanced visualization
-basin.pond.visualize_distance_map();
+basin.legacy_pond().visualize_distance_map();
 ```
+![](./examples/exports/example_iris_legacy.png)
+
+```python
+# display the enhanced visualization
+basin.pond() \
+    .pad_layer() \
+    .petal_layer() \
+    .visualize();
+```
+![](./examples/exports/example_iris_pond.png)
+
+```python
+# alternatively, utilize the `iceflock` default theme instead of the `pond`
+basin.pond(style_name="iceflock") \
+    .pad_layer() \
+    .petal_layer() \
+    .visualize();
+```
+![](./examples/exports/example_iris_iceflock.png)
+
+```python
+# leverage out-of-box sample-wise projection function
+basin.pond() \
+    .pad_layer() \
+    .attraction_layer(X_scaled) \
+    .visualize();
+```
+![](./examples/exports/example_iris_pond_projection_01.png)
+
+```python
+# with customization supported
+#   e.g.: use the quantization error measured from best-matching unit as the color of the projected sample
+import numpy as np
+X_scaled_quantization_errors = np.linalg.norm(basin.som.quantization(X_scaled) - X_scaled, axis=1)
+custom_marker = dict(opacity=.85, size=10, color=X_scaled_quantization_errors, colorscale="Spectral_r", line=dict(width=1, color="black"))
+basin.pond(style_name="iceflock") \
+    .pad_layer() \
+    .attraction_layer(
+        X_scaled,
+        jitter_amount=.3,
+        marker=custom_marker
+    ) \
+    .visualize();
+```
+![](./examples/exports/example_iris_pond_projection_02.png)
