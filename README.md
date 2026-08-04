@@ -57,7 +57,7 @@ basin.pond(style_name="iceflock") \
 # leverage out-of-box sample-wise projection function
 basin.pond() \
     .pad_layer() \
-    .attraction_layer(X_scaled) \
+    .attraction_layer(X) \
     .visualize();
 ```
 ![](./examples/exports/example_iris_pond_projection_01.png)
@@ -66,12 +66,12 @@ basin.pond() \
 # with customization supported
 #   e.g.: use the quantization error measured from best-matching unit as the color of the projected sample
 import numpy as np
-X_scaled_quantization_errors = np.linalg.norm(basin.som.quantization(X_scaled) - X_scaled, axis=1)
-custom_marker = dict(opacity=.85, size=10, color=X_scaled_quantization_errors, colorscale="Spectral_r", line=dict(width=1, color="black"))
+X_quantization_errors = np.linalg.norm(basin.som.quantization(X) - X, axis=1)
+custom_marker = dict(opacity=.85, size=10, color=X_quantization_errors, colorscale="Spectral_r", line=dict(width=1, color="black"))
 basin.pond(style_name="iceflock") \
     .pad_layer() \
     .attraction_layer(
-        X_scaled,
+        X,
         jitter_amount=.3,
         marker=custom_marker
     ) \
