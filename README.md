@@ -14,6 +14,7 @@ adding nature-inspired visual enhancements to standard Self-Organizing Map plots
 
 This repository is a successor of the [Matplotlib](https://matplotlib.org)-based prototype library developed at [matthew-balogh/lilypond](https://github.com/matthew-balogh/lilypond).
 
+![](examples/exports/rw_example_cardio.png)
 
 ## Installation
 
