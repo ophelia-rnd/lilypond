@@ -52,10 +52,15 @@ class Pond:
         y_coords = winner_coords[:, 0]
         return x_coords, y_coords
 
-    def pad_layer(self, gap:Literal["auto", "nogap"]="auto", min_fraction=0.1, name="Node Layer"):
-        distance_map = self.basin.distance_map_
-        row_indices, col_indices = np.indices(distance_map.shape)
-        distance = distance_map.ravel()
+    def pad_layer(self,
+                  gap:Literal["auto", "nogap"]="auto",
+                  min_fraction=0.1, name="Node Layer",
+                  colorscale_source_feature_idx:int=None,
+                  colorscale=None):
+
+        row_indices, col_indices = np.indices(self.basin.lattice_shape_)
+        color_values = np.empty(self.basin.lattice_shape_).ravel()
+        distance = self.basin.distance_map_.ravel()
 
         if gap == "nogap":
             sizes = np.clip(1.0 - (distance - min(distance)), min_fraction, 1.0)
@@ -63,8 +68,18 @@ class Pond:
             sizes = np.clip(1.0 - distance, min_fraction, 1.0)
         else: raise ValueError("The argument `gap` must be either 'auto' or 'nogap'")
 
-        __colorscale = self._style_config["pad_colorscale"]
-        colors = px.colors.sample_colorscale(__colorscale, distance)
+        if colorscale_source_feature_idx is None:
+            color_values = distance
+        elif type(colorscale_source_feature_idx) == int:
+            component_idx = colorscale_source_feature_idx
+            assert (component_idx >= 0) and (component_idx < self.basin.component_size_), f"The argument `colorscale_source_feature_idx` must be within [0, {self.basin.component_size_})."
+            node_weights_by_component = self.basin.node_weights_[:, :, component_idx]
+            node_weights_by_component_norm = np.interp(node_weights_by_component, (node_weights_by_component.min(), node_weights_by_component.max()), (0, 1))
+            color_values = node_weights_by_component_norm.ravel()
+        else: raise ValueError("The argument `colorscale_source_feature_idx` must be either None or a feature index.")
+
+        __colorscale = colorscale if colorscale is not None else self._style_config["pad_colorscale"]
+        colors = px.colors.sample_colorscale(__colorscale, color_values)
 
         shapes = []
         for x, y, s, c in zip(col_indices.ravel(), row_indices.ravel(), sizes, colors):
