@@ -7,6 +7,7 @@ class Basin:
     STYLES = {
         "pond": {
             "water_colorscale": get_truncated_colorscale(colorscale="Blues", clip_interval=(.6, .9)),
+            "rhizome_colorscale": get_truncated_colorscale(colorscale="Greys", clip_interval=(.9, 1.0)),
             "pad_colorscale": get_truncated_colorscale(colorscale="speed_r", clip_interval=(.0, .9)),
             "petal_colorscale": get_truncated_colorscale(colorscale="Burg", clip_interval=(.0, .5)),
             "petal_marker": lambda activation_strength, colorscale, sizes, marker_line: dict(
@@ -23,6 +24,7 @@ class Basin:
         },
         "iceflock": {
             "water_colorscale": get_truncated_colorscale(colorscale="Blues", clip_interval=(.6, .9)),
+            "rhizome_colorscale": get_truncated_colorscale(colorscale="Greys", clip_interval=(.9, 1.0)),
             "pad_colorscale": get_truncated_colorscale(colorscale="gray_r", clip_interval=(.0, .1)),
             "petal_colorscale": get_truncated_colorscale(colorscale="gray_r", clip_interval=(.8, 1.0)),
             "petal_marker": lambda activation_strength, colorscale, sizes, marker_line: dict(
