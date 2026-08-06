@@ -52,41 +52,49 @@ class Pond:
         y_coords = winner_coords[:, 0]
         return x_coords, y_coords
 
-    def rhizome_layer(self, min_width=5, max_width=15, colorscale=None, name="Dual BMU Connections"):
+    def rhizome_layer(self, violations_only=False, min_width=5, max_width=15, colorscale=None, neighborhood:Literal["moore", "von-neumann"]= "moore", name="Dual BMU Connections"):
         b2mu_inds_flat = np.argsort(self.basin.som._distance_from_weights(self.basin.training_data), axis=1)[:, :2]
         b2mu_x_inds, b2mu_y_inds = np.unravel_index(b2mu_inds_flat, self.basin.lattice_shape_)
-        dxdy = np.hstack([np.diff(b2mu_x_inds), np.diff(b2mu_y_inds)])
 
-        bmus_1 = np.column_stack([b2mu_x_inds[:, 0], b2mu_y_inds[:, 0]])
-        bmus_2 = np.column_stack([b2mu_x_inds[:, 1], b2mu_y_inds[:, 1]])
-        edges = np.sort(np.stack([bmus_1, bmus_2], axis=1), axis=1).reshape(-1, 4)
-        unique_edges, counts = np.unique(edges, axis=0, return_counts=True)
+        b2mu_inds_dxdy = np.hstack([np.diff(b2mu_x_inds), np.diff(b2mu_y_inds)])
+        b2mu_inds_d = np.linalg.norm(b2mu_inds_dxdy, axis=1)
 
-        counts_norm_1 = np.interp(counts, (counts.min(), counts.max()), (0, 1))
-        color_values = counts_norm_1
+        show_inds = np.ones_like(b2mu_inds_d).astype(bool)
+        if violations_only:
+            t_neigh = 1.42 if neighborhood == "moore" else 1
+            show_inds = b2mu_inds_d > t_neigh
 
-        counts_norm_2 = np.interp(counts, (counts.min(), counts.max()), (min_width, max_width))
-        width_values = counts_norm_2
+        if any(show_inds == True):
+            bmus_1 = np.column_stack([b2mu_x_inds[:, 0], b2mu_y_inds[:, 0]])
+            bmus_2 = np.column_stack([b2mu_x_inds[:, 1], b2mu_y_inds[:, 1]])
+            edges = np.sort(np.stack([bmus_1, bmus_2], axis=1), axis=1).reshape(-1, 4)
+            unique_edges, counts = np.unique(edges[show_inds], axis=0, return_counts=True)
 
-        __colorscale = colorscale if colorscale is not None else self._style_config["rhizome_colorscale"]
-        colors = px.colors.sample_colorscale(__colorscale, color_values)
+            counts_norm_1 = np.interp(counts, (counts.min(), counts.max()), (0, 1))
+            color_values = counts_norm_1
 
-        shapes = []
-        for (y1, x1, y2, x2), c, w in zip(unique_edges, colors, width_values):
-            shapes.append(dict(
-                type="line",
-                x0=x1, y0=y1,
-                x1=x2, y1=y2,
-                line=dict(color=c, width=w),
-                layer="between",
-            ))
+            counts_norm_2 = np.interp(counts, (counts.min(), counts.max()), (min_width, max_width))
+            width_values = counts_norm_2
 
-        layer = {
-            "type": "rhizome",
-            "name": name,
-            "shapes": shapes,
-        }
-        self.__new_layer(layer)
+            __colorscale = colorscale if colorscale is not None else self._style_config["rhizome_colorscale"]
+            colors = px.colors.sample_colorscale(__colorscale, color_values)
+
+            shapes = []
+            for (y1, x1, y2, x2), c, w in zip(unique_edges, colors, width_values):
+                shapes.append(dict(
+                    type="line",
+                    x0=x1, y0=y1,
+                    x1=x2, y1=y2,
+                    line=dict(color=c, width=w),
+                    layer="between",
+                ))
+
+            layer = {
+                "type": "rhizome",
+                "name": name,
+                "shapes": shapes,
+            }
+            self.__new_layer(layer)
         return self
 
     def pad_layer(self, gap:Literal["auto", "nogap"]="auto", min_fraction=0.1, name="Node Layer"):
