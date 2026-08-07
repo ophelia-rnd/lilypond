@@ -45,8 +45,7 @@ class Basin:
     def from_data(cls, X, random_seed=None, verbose=False):
         from lilypond import SomRepresentation
         som = SomRepresentation.with_derived_params(X, random_seed=random_seed, verbose=verbose).fit(X).som
-        basin = cls(som, random_seed=random_seed, verbose=verbose)
-        basin.X_ = X.copy()
+        basin = cls(som, random_seed=random_seed, verbose=verbose).with_training_data(X)
         return basin
 
     @classmethod
@@ -62,6 +61,10 @@ class Basin:
     @property
     def has_training_data(self):
         return hasattr(self, "X_") and self.X_ is not None
+
+    def with_training_data(self, X):
+        self.X_ = X.copy()
+        return self
 
     def prepare(self, neighbor_distance_scaling: Literal["sum", "mean"] = "mean"):
         node_weights = self.som.get_weights().copy()
