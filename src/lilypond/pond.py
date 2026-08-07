@@ -237,12 +237,13 @@ class Pond:
             ))
 
         rows, cols = self.basin.lattice_shape_
-        fig.update_layout(dict(
+        args = dict(
             autosize=True, showlegend=True,
             xaxis=dict(range=[-0.5, cols - 0.5], scaleanchor="y", constrain="domain", zeroline=False, showgrid=False),
             yaxis=dict(range=[-0.5, rows - 0.5], zeroline=False, showgrid=False),
-            **layout_kwargs
-        ))
+        )
+        args.update(layout_kwargs)
+        fig.update_layout(args)
 
         if show_fig:
             fig.show()
