@@ -39,7 +39,8 @@ class Pond:
             ))
 
         layer = {
-            "type": "water",
+            "object": "water",
+            "type": "shape",
             "shapes": shapes,
         }
         self.__new_layer(layer)
@@ -90,9 +91,10 @@ class Pond:
                 ))
 
             layer = {
-                "type": "rhizome",
-                "name": name,
+                "object": "rhizome",
+                "type": "shape",
                 "shapes": shapes,
+                "name": name,
             }
             self.__new_layer(layer)
         return self
@@ -125,9 +127,10 @@ class Pond:
             ))
 
         layer = {
-            "type": "pad",
-            "name": name,
+            "object": "pad",
+            "type": "shape",
             "shapes": shapes,
+            "name": name,
         }
         self.__new_layer(layer)
         return self
@@ -156,21 +159,23 @@ class Pond:
 
             if len(__marker_halo):
                 halo_layer = {
-                    "type": "petal",
-                    "name": "Halo Layer",
+                    "object": "petal_halo",
+                    "type": "scatter",
                     "x_coords": col_indices,
                     "y_coords": row_indices,
                     "marker": __marker_halo,
+                    "name": "Halo Layer",
                     "scatter_kwargs": kwargs
                 }
                 self.__new_layer(halo_layer)
 
         layer = {
-            "type": "petal",
-            "name": name,
+            "object": "petal",
+            "type": "scatter",
             "x_coords": col_indices,
             "y_coords": row_indices,
             "marker": __marker,
+            "name": name,
             "scatter_kwargs": kwargs
         }
         self.__new_layer(layer)
@@ -182,12 +187,13 @@ class Pond:
         if marker: default_marker.update(marker)
         x_coords, y_coords = self._get_projection_coords(X)
         layer = {
-            "type": "projection",
-            "name": name,
+            "object": "attraction",
+            "type": "scatter",
             "jitter_amount": jitter_amount,
             "x_coords": x_coords,
             "y_coords": y_coords,
             "marker": default_marker,
+            "name": name,
             "scatter_kwargs": kwargs
         }
         self.__new_layer(layer)
@@ -196,44 +202,47 @@ class Pond:
     def visualize(self, show_fig=True, **layout_kwargs):
         fig = go.Figure()
 
-        for layer in self._layers:
-            if layer["type"] in ["water", "rhizome", "pad"]:
-                for shape in layer["shapes"]:
-                    fig.add_shape(shape)
+        shapes = [
+            s for layer in self._layers
+            if layer["type"] == "shape"
+            for s in layer["shapes"]
+        ]
+        fig.update_layout(shapes=shapes)
 
-            else:
-                if layer["type"] == "petal":
-                    x_coords, y_coords = layer["x_coords"], layer["y_coords"]
+        scatter_layers = [
+            layer for layer in self._layers
+            if layer["type"] == "scatter"
+        ]
+        for layer in scatter_layers:
+            x_coords, y_coords = layer["x_coords"], layer["y_coords"]
 
-                elif layer["type"] == "projection":
-                    x_coords, y_coords = layer["x_coords"], layer["y_coords"]
-                    jitter_amount = layer["jitter_amount"]
+            if layer["object"] == "attraction":
+                x_coords, y_coords = layer["x_coords"], layer["y_coords"]
+                jitter_amount = layer["jitter_amount"]
 
-                    if jitter_amount > 0:
-                        rng = np.random.default_rng(self.basin.random_seed)
-                        x_jitter = rng.uniform(-jitter_amount, jitter_amount, size=x_coords.shape)
-                        y_jitter = rng.uniform(-jitter_amount, jitter_amount, size=y_coords.shape)
-                        x_coords = x_coords + x_jitter
-                        y_coords = y_coords + y_jitter
+                if jitter_amount > 0:
+                    rng = np.random.default_rng(self.basin.random_seed)
+                    x_jitter = rng.uniform(-jitter_amount, jitter_amount, size=x_coords.shape)
+                    y_jitter = rng.uniform(-jitter_amount, jitter_amount, size=y_coords.shape)
+                    x_coords = x_coords + x_jitter
+                    y_coords = y_coords + y_jitter
 
-                else: raise ValueError("Unknown layer type")
-
-                fig.add_trace(go.Scatter(
-                    x=x_coords,
-                    y=y_coords,
-                    mode="markers",
-                    name=layer["name"],
-                    marker=layer["marker"],
-                    **layer["scatter_kwargs"]
-                ))
+            fig.add_trace(go.Scatter(
+                x=x_coords,
+                y=y_coords,
+                mode="markers",
+                name=layer["name"],
+                marker=layer["marker"],
+                **layer["scatter_kwargs"]
+            ))
 
         rows, cols = self.basin.lattice_shape_
-        fig.update_xaxes(range=[-0.5, cols - 0.5], scaleanchor="y", constrain="domain", zeroline=False, showgrid=False)
-        fig.update_yaxes(range=[-0.5, rows - 0.5], zeroline=False, showgrid=False)
-        fig.update_layout(autosize=True, showlegend=True)
-
-        if layout_kwargs:
-            fig.update_layout(**layout_kwargs)
+        fig.update_layout(dict(
+            autosize=True, showlegend=True,
+            xaxis=dict(range=[-0.5, cols - 0.5], scaleanchor="y", constrain="domain", zeroline=False, showgrid=False),
+            yaxis=dict(range=[-0.5, rows - 0.5], zeroline=False, showgrid=False),
+            **layout_kwargs
+        ))
 
         if show_fig:
             fig.show()
