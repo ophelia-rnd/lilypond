@@ -52,7 +52,7 @@ class Pond:
         y_coords = winner_coords[:, 0]
         return x_coords, y_coords
 
-    def rhizome_layer(self, violations_only=False, min_width=5, max_width=15, colorscale=None, neighborhood:Literal["moore", "von-neumann"]= "moore", name="Dual BMU Connections"):
+    def rhizome_layer(self, violations_only=False, min_width=5, max_width=15, colorscale=None, neighborhood:Literal["moore", "von-neumann"]="moore", name="Dual BMU Connections"):
         b2mu_inds_flat = np.argsort(self.basin.som._distance_from_weights(self.basin.training_data), axis=1)[:, :2]
         b2mu_x_inds, b2mu_y_inds = np.unravel_index(b2mu_inds_flat, self.basin.lattice_shape_)
 
