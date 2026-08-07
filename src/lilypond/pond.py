@@ -148,7 +148,7 @@ class Pond:
         self.__new_layer(layer)
         return self
 
-    def visualize(self, show_fig=True):
+    def visualize(self, show_fig=True, **layout_kwargs):
         fig = go.Figure()
 
         for layer in self._layers:
@@ -182,16 +182,13 @@ class Pond:
                     **layer["scatter_kwargs"]
                 ))
 
-            rows, cols = self.basin.lattice_shape_
-            fig.update_xaxes(range=[-0.5, cols - 0.5], zeroline=False, showgrid=False)
-            fig.update_yaxes(range=[-0.5, rows - 0.5], zeroline=False, showgrid=False)
+        rows, cols = self.basin.lattice_shape_
+        fig.update_xaxes(range=[-0.5, cols - 0.5], scaleanchor="y", constrain="domain", zeroline=False, showgrid=False)
+        fig.update_yaxes(range=[-0.5, rows - 0.5], zeroline=False, showgrid=False)
+        fig.update_layout(autosize=True, showlegend=True)
 
-        fig.update_layout(
-            autosize=True,
-            title="Distance map",
-            xaxis=dict(scaleanchor="y", constrain="domain"),
-            showlegend=True,
-        )
+        if layout_kwargs:
+            fig.update_layout(**layout_kwargs)
 
         if show_fig:
             fig.show()
