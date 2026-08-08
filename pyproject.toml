@@ -3,7 +3,7 @@ requires = ["setuptools >= 77.0.3"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "lilypond"
+name = "som-lilypond"
 description = "Intuitive visualization tool for high-dimensional data using Self-Organizing Maps"
 requires-python = ">=3.9"
 authors = [{name = "Mate Balogh", email = "matebalogh@ophelia-rnd.dev"}]
