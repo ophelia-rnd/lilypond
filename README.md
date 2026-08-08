@@ -56,15 +56,21 @@ from lilypond import Basin
 basin = Basin.from_data(X_scaled, random_seed=42, verbose=False).prepare()
 ```
 
-### Legacy visualization
+### Legacy visualizations
 
 ``` python
-basin.legacy_pond().visualize_distance_map();
+basin.legacy_pond().visualize_distance_map(width=1000);
 ```
 
 ![](README_files/figure-commonmark/cell-5-output-1.png)
 
-### Enhanced visualization
+``` python
+basin.legacy_pond().visualize_activation_map(width=1000);
+```
+
+![](README_files/figure-commonmark/cell-6-output-1.png)
+
+### Enhanced visualizations
 
 ``` python
 basin.pond() \
@@ -73,7 +79,7 @@ basin.pond() \
     .visualize(width=1000);
 ```
 
-![](README_files/figure-commonmark/cell-6-output-1.png)
+![](README_files/figure-commonmark/cell-7-output-1.png)
 
 ``` python
 # display 1st and 2nd BMU connections of training data
@@ -83,7 +89,7 @@ basin.pond() \
     .visualize(width=1000);
 ```
 
-![](README_files/figure-commonmark/cell-7-output-1.png)
+![](README_files/figure-commonmark/cell-8-output-1.png)
 
 ``` python
 # display 1st and 2nd BMU connections of training data
@@ -94,7 +100,7 @@ basin.pond() \
     .visualize(width=1000);
 ```
 
-![](README_files/figure-commonmark/cell-8-output-1.png)
+![](README_files/figure-commonmark/cell-9-output-1.png)
 
 ``` python
 # leverage out-of-box sample-wise projection function
@@ -104,7 +110,7 @@ basin.pond() \
     .visualize(width=1000);
 ```
 
-![](README_files/figure-commonmark/cell-9-output-1.png)
+![](README_files/figure-commonmark/cell-10-output-1.png)
 
 ### Themes and customization
 
@@ -117,7 +123,7 @@ basin.pond() \
     .visualize(width=1000);
 ```
 
-![](README_files/figure-commonmark/cell-10-output-1.png)
+![](README_files/figure-commonmark/cell-11-output-1.png)
 
 ``` python
 # utilize the `iceflock` default theme instead of the `pond`
@@ -127,7 +133,7 @@ basin.pond(base_style="iceflock") \
     .visualize(width=1000);
 ```
 
-![](README_files/figure-commonmark/cell-11-output-1.png)
+![](README_files/figure-commonmark/cell-12-output-1.png)
 
 ``` python
 # use the quantization error measured from best-matching unit as the color of the projected sample
@@ -146,4 +152,4 @@ basin.pond(base_style="iceflock") \
     .visualize(width=1000);
 ```
 
-![](README_files/figure-commonmark/cell-12-output-1.png)
+![](README_files/figure-commonmark/cell-13-output-1.png)

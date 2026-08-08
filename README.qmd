@@ -60,13 +60,17 @@ from lilypond import Basin
 basin = Basin.from_data(X_scaled, random_seed=42, verbose=False).prepare()
 ```
 
-### Legacy visualization
+### Legacy visualizations
 
 ```{python}
-basin.legacy_pond().visualize_distance_map();
+basin.legacy_pond().visualize_distance_map(width=1000);
 ```
 
-### Enhanced visualization
+```{python}
+basin.legacy_pond().visualize_activation_map(width=1000);
+```
+
+### Enhanced visualizations
 
 ```{python}
 basin.pond() \
