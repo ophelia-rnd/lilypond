@@ -5,7 +5,7 @@ from lilypond.som_representation import SomRepresentation
 from lilypond.pond_base_style import PondBaseStyle
 from importlib.metadata import PackageNotFoundError, metadata
 
-__version__ = "0.0.1"
+__version__ = "0.1.0"
 
 try:
     _meta = metadata("lilypond")
