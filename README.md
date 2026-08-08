@@ -37,7 +37,7 @@ at
 ## Installation
 
 ``` {bash}
-pip install git+https://github.com/ophelia-rnd/lilypond
+pip install som-lilypond
 ```
 
 ## Quick Start

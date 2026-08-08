@@ -35,7 +35,7 @@ This repository is a successor of the [Matplotlib](https://matplotlib.org)-based
 ## Installation
 
 ```{bash}
-pip install git+https://github.com/ophelia-rnd/lilypond
+pip install som-lilypond
 ```
 
 ## Quick Start
