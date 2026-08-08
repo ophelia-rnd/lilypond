@@ -4,8 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "lilypond"
-description = "Intuitive visualization tool for high-dimensional data using Self-Organizing Maps."
-readme = "README.md"
+description = "Intuitive visualization tool for high-dimensional data using Self-Organizing Maps"
 requires-python = ">=3.9"
 authors = [{name = "Mate Balogh", email = "matebalogh@ophelia-rnd.dev"}]
 maintainers = [{name = "Mate Balogh", email = "matebalogh@ophelia-rnd.dev"}]
