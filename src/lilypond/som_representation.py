@@ -1,7 +1,7 @@
 import numpy as np
 
 from minisom import MiniSom
-from lilypond.utils.som_hyparams import calc_som_hyparams
+from lilypond.utils.som_hyperparameter import calc_som_hyparams
 
 class SomRepresentation():
 
