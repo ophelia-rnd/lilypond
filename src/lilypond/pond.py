@@ -4,13 +4,14 @@ import plotly.express as px
 from plotly import graph_objects as go
 from typing_extensions import Literal
 from lilypond.basin import Basin
+from lilypond.pond_base_style import PondBaseStyle
 
 class Pond:
-    def __init__(self, basin: Basin, style_name:Literal["pond", "iceflock"]="pond", verbose=False):
+    def __init__(self, basin: Basin, base_style:Literal["pond", "iceflock"] | PondBaseStyle = "pond", verbose=False):
         self.basin = basin
         self.verbose = verbose
-        self.style_name = style_name
-        self._style_config = Basin.STYLES[self.style_name]
+        self.base_style = base_style
+        self._base_style_config = base_style if isinstance(base_style, PondBaseStyle) else PondBaseStyle.get(base_style)
         self._layers = []
         self.__water_layer()
 
@@ -22,8 +23,8 @@ class Pond:
         row_indices, col_indices = np.indices(distance_map.shape)
         distance = distance_map.ravel()
 
-        __colorscale = self._style_config["water_colorscale"]
-        colors = px.colors.sample_colorscale(__colorscale, distance)
+        colorscale = self._base_style_config.water_colorscale
+        colors = px.colors.sample_colorscale(colorscale, distance)
 
         shapes = []
         for x, y, c in zip(col_indices.ravel(), row_indices.ravel(), colors):
@@ -77,8 +78,8 @@ class Pond:
             counts_norm_2 = np.interp(counts, (counts.min(), counts.max()), (min_width, max_width))
             width_values = counts_norm_2
 
-            __colorscale = colorscale if colorscale is not None else self._style_config["rhizome_colorscale"]
-            colors = px.colors.sample_colorscale(__colorscale, color_values)
+            _colorscale = colorscale if colorscale is not None else self._base_style_config.rhizome_colorscale
+            colors = px.colors.sample_colorscale(_colorscale, color_values)
 
             shapes = []
             for (y1, x1, y2, x2), c, w in zip(unique_edges, colors, width_values):
@@ -99,7 +100,7 @@ class Pond:
             self.__new_layer(layer)
         return self
 
-    def pad_layer(self, gap:Literal["auto", "nogap"]="auto", min_fraction=0.1, name="Node Layer"):
+    def pad_layer(self, gap:Literal["auto", "nogap"]="auto", min_fraction=0.1, colorscale=None, name="Node Layer"):
         distance_map = self.basin.distance_map_
         row_indices, col_indices = np.indices(distance_map.shape)
         distance = distance_map.ravel()
@@ -110,8 +111,8 @@ class Pond:
             sizes = np.clip(1.0 - distance, min_fraction, 1.0)
         else: raise ValueError("The argument `gap` must be either 'auto' or 'nogap'")
 
-        __colorscale = self._style_config["pad_colorscale"]
-        colors = px.colors.sample_colorscale(__colorscale, distance)
+        _colorscale = colorscale if colorscale is not None else self._base_style_config.pad_colorscale
+        colors = px.colors.sample_colorscale(_colorscale, distance)
 
         shapes = []
         for x, y, s, c in zip(col_indices.ravel(), row_indices.ravel(), sizes, colors):
@@ -135,7 +136,7 @@ class Pond:
         self.__new_layer(layer)
         return self
 
-    def petal_layer(self, min_size=8, max_size=30, name="Training Activation", marker=None, marker_line=None, marker_halo=None, hide_halo=False, **kwargs):
+    def petal_layer(self, min_size=8, max_size=30, colorscale=None, marker=None, marker_line=None, marker_halo=None, hide_halo=False, name="Training Activation", **kwargs):
         activation_map = self.basin.activation_map_
         row_indices, col_indices = np.nonzero(activation_map)
         activation_strength = activation_map[row_indices, col_indices]
@@ -147,23 +148,29 @@ class Pond:
         else:
             sizes = np.full(activation_strength.shape, min_size)
 
-        __colorscale = self._style_config["petal_colorscale"]
-        __marker_line = self._style_config["petal_marker_line"](activation_strength, __colorscale)
-        if marker_line: __marker_line.update(marker_line)
-        __marker = self._style_config["petal_marker"](activation_strength, __colorscale, sizes, __marker_line)
-        if marker: __marker.update(marker)
+        _colorscale = colorscale if colorscale is not None else self._base_style_config.petal_colorscale
+        _marker = self._base_style_config.petal_marker.copy()
+        _marker_line = self._base_style_config.petal_marker_line.copy()
 
-        if not hide_halo:
-            __marker_halo = self._style_config["petal_halo_marker"](sizes)
-            if marker_halo: __marker_halo.update(marker_halo)
+        _marker_line.update(dict(colorscale=_colorscale, color=activation_strength))
+        if marker_line: _marker_line.update(marker_line)
 
-            if len(__marker_halo):
+        _marker.update(dict(colorscale=_colorscale, color=activation_strength, size=sizes))
+        _marker.update(dict(line=_marker_line))
+        if marker: _marker.update(marker)
+
+        if not hide_halo and (self._base_style_config.petal_halo_marker is not None or marker_halo is not None):
+            _marker_halo = self._base_style_config.petal_halo_marker.copy()
+            _marker_halo.update(dict(size=sizes * 1.2))
+            if marker_halo: _marker_halo.update(marker_halo)
+
+            if len(_marker_halo):
                 halo_layer = {
                     "object": "petal_halo",
                     "type": "scatter",
                     "x_coords": col_indices,
                     "y_coords": row_indices,
-                    "marker": __marker_halo,
+                    "marker": _marker_halo,
                     "name": "Halo Layer",
                     "scatter_kwargs": kwargs
                 }
@@ -174,7 +181,7 @@ class Pond:
             "type": "scatter",
             "x_coords": col_indices,
             "y_coords": row_indices,
-            "marker": __marker,
+            "marker": _marker,
             "name": name,
             "scatter_kwargs": kwargs
         }

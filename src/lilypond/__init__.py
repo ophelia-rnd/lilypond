@@ -2,6 +2,7 @@ from lilypond.basin import Basin
 from lilypond.legacy_pond import LegacyPond
 from lilypond.pond import Pond
 from lilypond.som_representation import SomRepresentation
+from lilypond.pond_base_style import PondBaseStyle
 from importlib.metadata import PackageNotFoundError, metadata
 
 __version__ = "0.0.1"
@@ -21,4 +22,4 @@ def describe():
 
     print(description)
 
-__all__ = ["__version__", "SomRepresentation", "Basin", "LegacyPond", "Pond"]
+__all__ = ["__version__", "SomRepresentation", "Basin", "LegacyPond", "Pond", "PondBaseStyle"]
