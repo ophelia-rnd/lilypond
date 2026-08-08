@@ -2,8 +2,8 @@
 
 <div align="left">
 
-<img width="80px" alt="Lilypond logo" src="_assets/lilypond_logo.png" />
-<img height="80px" alt="Ophelia R&D logo" src="_assets/ophelia_rnd_logo.png" />
+<img width="80px" alt="Lilypond logo" src="README_files/lilypond_logo.png" />
+<img height="80px" alt="Ophelia R&D logo" src="README_files/ophelia_rnd_logo.png" />
 
 </div>
 
@@ -116,7 +116,7 @@ basin.pond() \
 
 ``` python
 # utilize the `iceflock` default theme instead of the `pond`
-basin.pond(style_name="iceflock") \
+basin.pond(base_style="iceflock") \
     .pad_layer() \
     .petal_layer() \
     .visualize(width=1000);
@@ -131,7 +131,7 @@ import numpy as np
 X_quantization_errors = np.linalg.norm(basin.som.quantization(X_scaled) - X_scaled, axis=1)
 custom_marker = dict(opacity=.85, size=16, color=X_quantization_errors, colorscale="Spectral_r", line=dict(width=1, color="black"))
 
-basin.pond(style_name="iceflock") \
+basin.pond(base_style="iceflock") \
     .pad_layer() \
     .attraction_layer(
         X_scaled,
