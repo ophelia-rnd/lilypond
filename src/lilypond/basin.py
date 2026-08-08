@@ -59,6 +59,15 @@ class Basin:
         return self.X_
 
     @property
+    def activation_map(self):
+        assert self.has_training_data, "The Basin does not have explicitly assigned training data."
+        return self.activation_map_
+
+    @property
+    def distance_map(self):
+        return self.distance_map_
+
+    @property
     def has_training_data(self):
         return hasattr(self, "X_") and self.X_ is not None
 
