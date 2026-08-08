@@ -9,6 +9,11 @@
 
 ------------------------------------------------------------------------
 
+[![PyPI
+Version](https://img.shields.io/pypi/v/som-lilypond.png)](https://pypi.org/project/som-lilypond/)
+[![PyPI
+Downloads](https://img.shields.io/pypi/dm/som-lilypond.png)](https://pypi.org/project/som-lilypond/)
+
 # Lilypond
 
 🪷 Lilypond is an intuitive visualization tool for high-dimensional data
