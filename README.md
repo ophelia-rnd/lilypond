@@ -2,8 +2,8 @@
 
 <div align="left">
 
-<img width="80px" alt="Lilypond logo" src="_assets/lilypond_logo.png" />
-<img height="80px" alt="Ophelia R&D logo" src="_assets/ophelia_rnd_logo.png" />
+<img width="80px" alt="Lilypond logo" src="README_files/lilypond_logo.png" />
+<img height="80px" alt="Ophelia R&D logo" src="README_files/ophelia_rnd_logo.png" />
 
 </div>
 
