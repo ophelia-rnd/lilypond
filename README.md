@@ -20,7 +20,7 @@ Downloads](https://img.shields.io/pypi/dm/som-lilypond.png)](https://pypi.org/pr
 leveraging the representation learning capability of Self-Organizing
 Maps (SOM).
 
-![](examples/exports/rw_example_cardio.png)
+![](README_files/lilypond_example_cardio.png)
 
 ## Details
 

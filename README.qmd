@@ -23,7 +23,7 @@ execute:
 🪷 Lilypond is an intuitive visualization tool for high-dimensional data
 leveraging the representation learning capability of Self-Organizing Maps (SOM).
 
-![](examples/exports/rw_example_cardio.png)
+![](README_files/lilypond_example_cardio.png)
 
 ## Details
 
