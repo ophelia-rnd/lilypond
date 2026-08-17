@@ -9,7 +9,7 @@ class LegacyPond:
 
     def visualize_distance_map(self, colorscale="Spectral_r", show_fig=True, **layout_kwargs):
         fig = px.imshow(
-            self.basin.distance_map,
+            self.basin.som_representation.distance_map,
             origin="lower",
             labels=dict(color="Distance"),
             color_continuous_scale=colorscale,
@@ -22,7 +22,7 @@ class LegacyPond:
 
     def visualize_activation_map(self, colorscale="gray_r", show_fig=True, **layout_kwargs):
         fig = px.imshow(
-            self.basin.activation_map,
+            self.basin.som_representation.activation_map,
             origin="lower",
             labels=dict(color="Activation"),
             color_continuous_scale=colorscale,

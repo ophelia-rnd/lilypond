@@ -53,7 +53,7 @@ X_scaled = StandardScaler().fit_transform(X)
 ``` python
 # prepare for the pond with a `Basin`
 from lilypond import Basin
-basin = Basin.from_data(X_scaled, random_seed=42, verbose=False).prepare()
+basin = Basin.from_data(X_scaled, random_seed=42, verbose=False)
 ```
 
 ### Legacy visualizations
@@ -139,7 +139,7 @@ basin.pond(base_style="iceflock") \
 # use the quantization error measured from best-matching unit as the color of the projected sample
 import numpy as np
 
-X_quantization_errors = np.linalg.norm(basin.som.quantization(X_scaled) - X_scaled, axis=1)
+X_quantization_errors = np.linalg.norm(basin.som_representation.som.quantization(X_scaled) - X_scaled, axis=1)
 custom_marker = dict(opacity=.85, size=16, color=X_quantization_errors, colorscale="Spectral_r", line=dict(width=1, color="black"))
 
 basin.pond(base_style="iceflock") \

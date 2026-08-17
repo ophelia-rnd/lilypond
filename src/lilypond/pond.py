@@ -19,7 +19,7 @@ class Pond:
         self._layers.append(layer)
 
     def __water_layer(self):
-        distance_map = self.basin.distance_map_
+        distance_map = self.basin.som_representation.distance_map
         row_indices, col_indices = np.indices(distance_map.shape)
         distance = distance_map.ravel()
 
@@ -48,29 +48,22 @@ class Pond:
         return self
 
     def _get_projection_coords(self, X):
-        som = self.basin.som
+        som = self.basin.som_representation.som
         winner_coords = np.array([som.winner(x) for x in np.asarray(X)])
         x_coords = winner_coords[:, 1]
         y_coords = winner_coords[:, 0]
         return x_coords, y_coords
 
     def rhizome_layer(self, violations_only=False, min_width=5, max_width=15, colorscale=None, neighborhood:Literal["moore", "von-neumann"]="moore", name="Dual BMU Connections"):
-        b2mu_inds_flat = np.argsort(self.basin.som._distance_from_weights(self.basin.training_data), axis=1)[:, :2]
-        b2mu_x_inds, b2mu_y_inds = np.unravel_index(b2mu_inds_flat, self.basin.lattice_shape_)
+        unique_b2mu_edges, unique_b2mu_counts, unique_b2mu_distances = self.basin.som_representation.unique_b2mu_edges_counts_distances
+        show_inds = np.ones_like(unique_b2mu_distances).astype(bool)
 
-        b2mu_inds_dxdy = np.hstack([np.diff(b2mu_x_inds), np.diff(b2mu_y_inds)])
-        b2mu_inds_d = np.linalg.norm(b2mu_inds_dxdy, axis=1)
-
-        show_inds = np.ones_like(b2mu_inds_d).astype(bool)
         if violations_only:
             t_neigh = 1.42 if neighborhood == "moore" else 1
-            show_inds = b2mu_inds_d > t_neigh
+            show_inds = unique_b2mu_distances > t_neigh
 
         if any(show_inds == True):
-            bmus_1 = np.column_stack([b2mu_x_inds[:, 0], b2mu_y_inds[:, 0]])
-            bmus_2 = np.column_stack([b2mu_x_inds[:, 1], b2mu_y_inds[:, 1]])
-            edges = np.sort(np.stack([bmus_1, bmus_2], axis=1), axis=1).reshape(-1, 4)
-            unique_edges, counts = np.unique(edges[show_inds], axis=0, return_counts=True)
+            unique_edges, counts = unique_b2mu_edges[show_inds], unique_b2mu_counts[show_inds]
 
             counts_norm_1 = np.interp(counts, (counts.min(), counts.max()), (0, 1))
             color_values = counts_norm_1
@@ -101,7 +94,7 @@ class Pond:
         return self
 
     def pad_layer(self, gap:Literal["auto", "nogap"]="auto", min_fraction=0.1, colorscale=None, name="Node Layer"):
-        distance_map = self.basin.distance_map_
+        distance_map = self.basin.som_representation.distance_map
         row_indices, col_indices = np.indices(distance_map.shape)
         distance = distance_map.ravel()
 
@@ -137,7 +130,7 @@ class Pond:
         return self
 
     def petal_layer(self, min_size=8, max_size=30, colorscale=None, marker=None, marker_line=None, marker_halo=None, hide_halo=False, name="Training Activation", **kwargs):
-        activation_map = self.basin.activation_map_
+        activation_map = self.basin.som_representation.activation_map
         row_indices, col_indices = np.nonzero(activation_map)
         activation_strength = activation_map[row_indices, col_indices]
 
@@ -243,7 +236,7 @@ class Pond:
                 **layer["scatter_kwargs"]
             ))
 
-        rows, cols = self.basin.lattice_shape_
+        rows, cols = self.basin.som_representation.lattice_shape_
         args = dict(
             autosize=True, showlegend=True,
             xaxis=dict(range=[-0.5, cols - 0.5], scaleanchor="y", constrain="domain", zeroline=False, showgrid=False),

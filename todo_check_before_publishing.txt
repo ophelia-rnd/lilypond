@@ -1,0 +1,2 @@
+- import minisom-representation from PyPI (publish first)
+- changes include breaking changes
