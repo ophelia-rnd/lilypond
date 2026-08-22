@@ -1,52 +1,50 @@
----
-title: " "
-format: gfm
-jupyter: python3
-execute:
-  echo: true
-  eval: true
-  output: true
----
+
 
 <div align="left">
+
 <img width="80px" alt="Lilypond logo" src="README_files/lilypond_logo.png" />
 <img height="80px" alt="Ophelia R&D logo" src="README_files/ophelia_rnd_logo.png" />
+
 </div>
 
----
+------------------------------------------------------------------------
 
-[![PyPI Version](https://img.shields.io/pypi/v/som-lilypond)](https://pypi.org/project/som-lilypond/)
-[![PyPI Downloads](https://img.shields.io/pypi/dm/som-lilypond)](https://pypi.org/project/som-lilypond/)
+[![PyPI
+Version](https://img.shields.io/pypi/v/som-lilypond)](https://pypi.org/project/som-lilypond/)
+[![PyPI
+Downloads](https://img.shields.io/pypi/dm/som-lilypond)](https://pypi.org/project/som-lilypond/)
 
 # Lilypond
 
 🪷 Lilypond is an intuitive visualization tool for high-dimensional data
-leveraging the representation learning capability of Self-Organizing Maps (SOM).
+leveraging the representation learning capability of Self-Organizing
+Maps (SOM).
 
 ![](README_files/lilypond_example_cardio.png)
 
 ## About
 
-Lilypond uses [SomRepresentation](https://github.com/ophelia-rnd/minisom-representation) (a wrapper around [MiniSom](https://github.com/JustGlowing/minisom)) for fitting the data and [Plotly](https://plotly.com/) for rendering,
-adding nature-inspired visual enhancements to standard Self-Organizing Map plots.
+Lilypond uses
+[SomRepresentation](https://github.com/ophelia-rnd/minisom-representation)
+(a wrapper around [MiniSom](https://github.com/JustGlowing/minisom)) for
+fitting the data and [Plotly](https://plotly.com/) for rendering, adding
+nature-inspired visual enhancements to standard Self-Organizing Map
+plots.
 
-This repository is a successor of the [Matplotlib](https://matplotlib.org)-based prototype library developed at [matthew-balogh/lilypond](https://github.com/matthew-balogh/lilypond).
+This repository is a successor of the
+[Matplotlib](https://matplotlib.org)-based prototype library developed
+at
+[matthew-balogh/lilypond](https://github.com/matthew-balogh/lilypond).
 
 ## Installation
 
-```{bash}
+``` {bash}
 pip install som-lilypond
 ```
 
 ## Quick Start
 
-```{python}
-#| echo: false
-import plotly.io as pio
-pio.renderers.default = "png"
-```
-
-```{python}
+``` python
 # load and scale Iris dataset
 from sklearn.datasets import load_iris
 from sklearn.preprocessing import StandardScaler
@@ -54,7 +52,7 @@ X, y = load_iris(return_X_y=True, as_frame=False)
 X_scaled = StandardScaler().fit_transform(X)
 ```
 
-```{python}
+``` python
 # prepare for the pond with a `Basin`
 from lilypond import Basin
 basin = Basin.from_data(X_scaled, random_seed=42, verbose=False)
@@ -62,24 +60,30 @@ basin = Basin.from_data(X_scaled, random_seed=42, verbose=False)
 
 ### Legacy visualizations
 
-```{python}
+``` python
 basin.legacy_pond().visualize_distance_map(width=1000);
 ```
 
-```{python}
+![](README_files/figure-commonmark/cell-5-output-1.png)
+
+``` python
 basin.legacy_pond().visualize_activation_map(width=1000);
 ```
 
+![](README_files/figure-commonmark/cell-6-output-1.png)
+
 ### Enhanced visualizations
 
-```{python}
+``` python
 basin.pond() \
     .pad_layer() \
     .petal_layer() \
     .visualize(width=1000);
 ```
 
-```{python}
+![](README_files/figure-commonmark/cell-7-output-1.png)
+
+``` python
 # display 1st and 2nd BMU connections of training data
 basin.pond() \
     .rhizome_layer() \
@@ -87,7 +91,9 @@ basin.pond() \
     .visualize(width=1000);
 ```
 
-```{python}
+![](README_files/figure-commonmark/cell-8-output-1.png)
+
+``` python
 # display 1st and 2nd BMU connections of training data
 #   that violate Von-Neumann neighborhood constraint
 basin.pond() \
@@ -96,7 +102,9 @@ basin.pond() \
     .visualize(width=1000);
 ```
 
-```{python}
+![](README_files/figure-commonmark/cell-9-output-1.png)
+
+``` python
 # leverage out-of-box sample-wise projection function
 basin.pond() \
     .pad_layer() \
@@ -104,9 +112,11 @@ basin.pond() \
     .visualize(width=1000);
 ```
 
+![](README_files/figure-commonmark/cell-10-output-1.png)
+
 ### Themes and customization
 
-```{python}
+``` python
 # customize layers
 basin.pond() \
     .rhizome_layer(min_width=3, max_width=18, colorscale="Greys") \
@@ -115,7 +125,9 @@ basin.pond() \
     .visualize(width=1000);
 ```
 
-```{python}
+![](README_files/figure-commonmark/cell-11-output-1.png)
+
+``` python
 # utilize the `iceflock` default theme instead of the `pond`
 basin.pond(base_style="iceflock") \
     .pad_layer() \
@@ -123,7 +135,9 @@ basin.pond(base_style="iceflock") \
     .visualize(width=1000);
 ```
 
-```{python}
+![](README_files/figure-commonmark/cell-12-output-1.png)
+
+``` python
 # use the quantization error measured from best-matching unit as the color of the projected sample
 import numpy as np
 
@@ -139,3 +153,5 @@ basin.pond(base_style="iceflock") \
     ) \
     .visualize(width=1000);
 ```
+
+![](README_files/figure-commonmark/cell-13-output-1.png)
