@@ -4,7 +4,7 @@ from lilypond.pond import Pond
 from lilypond.pond_base_style import PondBaseStyle
 from importlib.metadata import PackageNotFoundError, metadata
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 try:
     _meta = metadata("lilypond")
