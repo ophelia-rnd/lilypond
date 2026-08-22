@@ -15,7 +15,7 @@ dynamic = ["version"]
 dependencies = [
     "numpy",
     "plotly",
-    "minisom-representation@git+https://github.com/ophelia-rnd/minisom-representation"
+    "minisom-representation"
 ]
 
 # Optional/development dependencies installed via `pip install -e .[dev]`
