@@ -15,7 +15,7 @@ dynamic = ["version"]
 dependencies = [
     "numpy",
     "plotly",
-    "minisom"
+    "minisom-representation@git+https://github.com/ophelia-rnd/minisom-representation"
 ]
 
 # Optional/development dependencies installed via `pip install -e .[dev]`
@@ -24,6 +24,7 @@ dev = [
     "pytest",
     "jupyter",
     "scikit-learn",
+    "minisom",
 ]
 
 [tool.setuptools.dynamic]
