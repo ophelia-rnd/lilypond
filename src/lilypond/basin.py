@@ -10,8 +10,13 @@ class Basin:
         self.verbose = verbose
 
     @classmethod
-    def from_data(cls, X, **kwargs):
-        som_representation = SomRepresentation.with_derived_params(X, **kwargs).fit(X)
+    def from_data_online(cls, X, **kwargs):
+        som_representation = SomRepresentation.with_derived_params(X, **kwargs).fit_online(X)
+        return cls(som_representation, **kwargs)
+
+    @classmethod
+    def from_data_offline(cls, X, **kwargs):
+        som_representation = SomRepresentation.with_derived_params(X, **kwargs).fit_offline(X)
         return cls(som_representation, **kwargs)
 
     @classmethod
