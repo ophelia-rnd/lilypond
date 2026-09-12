@@ -54,8 +54,13 @@ class Pond:
         y_coords = winner_coords[:, 0]
         return x_coords, y_coords
 
-    def rhizome_layer(self, violations_only=False, min_width=5, max_width=15, colorscale=None, neighborhood:Literal["moore", "von-neumann"]="moore", name="Dual BMU Connections"):
-        unique_b2mu_edges, unique_b2mu_counts, unique_b2mu_distances = self.basin.som_representation.unique_b2mu_edges_counts_distances
+    def rhizome_layer(self, X=None, violations_only=False, min_width=5, max_width=15, colorscale=None, neighborhood:Literal["moore", "von-neumann"]="moore", name="Dual BMU Connections"):
+        unique_b2mu_edges, unique_b2mu_counts, unique_b2mu_distances = (
+            self.basin.som_representation.unique_b2mu_edges_counts_distances
+            if X is None
+            else self.basin.som_representation._calc_unique_b2mu_edges_counts_distances(X)
+        )
+
         show_inds = np.ones_like(unique_b2mu_distances).astype(bool)
 
         if violations_only:
