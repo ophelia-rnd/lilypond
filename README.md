@@ -55,7 +55,7 @@ X_scaled = StandardScaler().fit_transform(X)
 ``` python
 # prepare for the pond with a `Basin`
 from lilypond import Basin
-basin = Basin.from_data(X_scaled, random_seed=42, verbose=False)
+basin = Basin.from_data_online(X_scaled, random_seed=42, verbose=False)
 ```
 
 ### Legacy visualizations
@@ -139,8 +139,8 @@ basin.pond(base_style="iceflock") \
 
 ``` python
 # use the quantization error measured from best-matching unit as the color of the projected sample
-import numpy as np
 
+import numpy as np
 X_quantization_errors = np.linalg.norm(basin.som_representation.som.quantization(X_scaled) - X_scaled, axis=1)
 custom_marker = dict(opacity=.85, size=16, color=X_quantization_errors, colorscale="Spectral_r", line=dict(width=1, color="black"))
 
@@ -155,3 +155,29 @@ basin.pond(base_style="iceflock") \
 ```
 
 ![](README_files/figure-commonmark/cell-13-output-1.png)
+
+``` python
+# inspect 1st and 2nd BMU connections of certain data points
+
+import numpy as np
+rng = np.random.default_rng(42)
+sampled_indices = rng.choice(X_scaled.shape[0], size=25, replace=False)
+
+X_scaled_selected = X_scaled[sampled_indices].copy()
+custom_marker.update(dict(opacity=.95, size=20))
+
+basin.pond(base_style="iceflock") \
+    .pad_layer() \
+    .rhizome_layer(
+        X=X_scaled_selected,
+        colorscale=["#000000", "#000000"]
+    ) \
+    .attraction_layer(
+        X_scaled_selected,
+        jitter_amount=.3,
+        marker=custom_marker
+    ) \
+    .visualize(width=1000);
+```
+
+![](README_files/figure-commonmark/cell-14-output-1.png)
