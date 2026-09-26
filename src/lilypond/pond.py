@@ -1,8 +1,10 @@
+from __future__ import annotations
+
 import numpy as np
 import plotly.express as px
 
 from plotly import graph_objects as go
-from typing_extensions import Literal
+from typing import Literal
 from lilypond.basin import Basin
 from lilypond.pond_base_style import PondBaseStyle
 

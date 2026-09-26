@@ -5,18 +5,29 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "som-lilypond"
 description = "Intuitive visualization tool for high-dimensional data using Self-Organizing Maps"
+readme = "README.pypi.md"
 requires-python = ">=3.9"
 authors = [{name = "Mate Balogh", email = "matebalogh@ophelia-rnd.dev"}]
 maintainers = [{name = "Mate Balogh", email = "matebalogh@ophelia-rnd.dev"}]
 license = "Apache-2.0"
 dynamic = ["version"]
+keywords = ["self-organizing-map", "som", "visualization", "machine-learning"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Programming Language :: Python :: 3",
+]
 
-# Core dependencies installed when users run `pip install my-library`
+# Core dependencies installed when users run `pip install som-lilypond`
 dependencies = [
     "numpy",
     "plotly",
     "minisom-representation"
 ]
+
+[project.urls]
+Homepage = "https://github.com/ophelia-rnd/lilypond"
+Repository = "https://github.com/ophelia-rnd/lilypond"
+Issues = "https://github.com/ophelia-rnd/lilypond/issues"
 
 # Optional/development dependencies installed via `pip install -e .[dev]`
 [project.optional-dependencies]
