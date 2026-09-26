@@ -7,14 +7,14 @@ from importlib.metadata import PackageNotFoundError, metadata
 __version__ = "0.2.1"
 
 try:
-    _meta = metadata("lilypond")
+    _meta = metadata("som-lilypond")
     __description__ = _meta["Summary"]
 except PackageNotFoundError:
     __description__ = ""
 
 def describe():
     description = (
-        "Lilypond (lilypond)\n"
+        "Lilypond (som-lilypond)\n"
         "Description: {}\n"
         "Version: {}\n"
     ).format(__description__, __version__)
