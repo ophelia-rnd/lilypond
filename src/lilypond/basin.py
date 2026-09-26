@@ -1,13 +1,16 @@
+from __future__ import annotations
+
 from typing import Literal
 from lilypond.pond_base_style import PondBaseStyle
 from minisom_representation import SomRepresentation
 
 class Basin:
 
-    def __init__(self, som_representation: SomRepresentation, random_seed=None, verbose=False):
+    def __init__(self, som_representation: SomRepresentation, random_seed=None, verbose=False, **kwargs):
         self.som_representation = som_representation
         self.random_seed = random_seed
         self.verbose = verbose
+        self.kwargs = kwargs
 
     @classmethod
     def from_data_online(cls, X, **kwargs):

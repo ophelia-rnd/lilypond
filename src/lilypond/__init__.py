@@ -1,8 +1,10 @@
+from __future__ import annotations
+
+from importlib.metadata import PackageNotFoundError, metadata
 from lilypond.basin import Basin
 from lilypond.legacy_pond import LegacyPond
 from lilypond.pond import Pond
 from lilypond.pond_base_style import PondBaseStyle
-from importlib.metadata import PackageNotFoundError, metadata
 
 __version__ = "0.2.1"
 
