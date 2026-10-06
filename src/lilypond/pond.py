@@ -119,7 +119,11 @@ class Pond:
             component_idx = colorscale_source_feature_idx
             assert (component_idx >= 0) and (component_idx < self.basin.som_representation.component_size_), f"The argument `colorscale_source_feature_idx` must be within [0, {self.basin.som_representation.component_size_})."
             node_weights_by_component = self.basin.som_representation.node_weights_[:, :, component_idx]
-            node_weights_by_component_norm = np.interp(node_weights_by_component, (node_weights_by_component.min(), node_weights_by_component.max()), (0, 1))
+            w_min, w_max = node_weights_by_component.min(), node_weights_by_component.max()
+            if w_max > w_min:
+                node_weights_by_component_norm = np.interp(node_weights_by_component, (w_min, w_max), (0, 1))
+            else:
+                node_weights_by_component_norm = np.zeros_like(node_weights_by_component, dtype=float)
             color_values = node_weights_by_component_norm.ravel()
         else: raise ValueError("The argument `colorscale_source_feature_idx` must be either None or a feature index.")
 
