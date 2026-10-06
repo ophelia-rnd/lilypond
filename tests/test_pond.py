@@ -34,7 +34,7 @@ def test_pad_layer_uniform_weights_maps_to_zero():
     som_rep = MagicMock(distance_map=np.zeros((3, 3)), component_size_=1)
     som_rep.node_weights_ = np.full((3, 3, 1), 5.0)
 
-    pond = Basin(som_rep).pond().pad_layer(colorscale_source_feature_idx=0)
+    pond = Basin(som_rep).pond().pad_layer(color_by={"feature_idx": 0})
     shapes = pond._layers[-1]["shapes"]
 
     expected_color_0 = px.colors.sample_colorscale(pond._base_style_config.pad_colorscale, [0.0])[0]
