@@ -6,7 +6,7 @@ from lilypond.legacy_pond import LegacyPond
 from lilypond.pond import Pond
 from lilypond.pond_base_style import PondBaseStyle
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 
 try:
     _meta = metadata("som-lilypond")
