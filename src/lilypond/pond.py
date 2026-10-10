@@ -198,7 +198,7 @@ class Pond:
         self.__new_layer(layer)
         return self
 
-    def petal_layer(self, min_size=8, max_size=30, colorscale=None, marker=None, marker_line=None, marker_halo=None, hide_halo=False, name="Training Activation", show_colorbar=True, colorbar_title=None, **kwargs):
+    def petal_layer(self, min_size=8, max_size=30, colorscale=None, marker=None, marker_line=None, hide_halo=False, name="Training Activation", show_colorbar=True, colorbar_title=None, **kwargs):
         activation_map = self.basin.som_representation.activation_map
         row_indices, col_indices = np.nonzero(activation_map)
         activation_strength = activation_map[row_indices, col_indices]
@@ -221,20 +221,22 @@ class Pond:
         _marker.update(dict(line=_marker_line))
         if marker: _marker.update(marker)
 
-        if not hide_halo and (self._base_style_config.petal_halo_marker is not None or marker_halo is not None):
+        if not hide_halo and self._base_style_config.petal_halo_marker is not None:
             _marker_halo = self._base_style_config.petal_halo_marker.copy()
             _marker_halo.update(dict(size=sizes * 1.2))
-            if marker_halo: _marker_halo.update(marker_halo)
 
             if len(_marker_halo):
+                halo_kwargs = kwargs.copy()
+                halo_kwargs.setdefault("showlegend", False)
+                halo_kwargs.setdefault("legendgroup", "petal")
                 halo_layer = {
                     "object": "petal_halo",
                     "type": "scatter",
                     "x_coords": col_indices,
                     "y_coords": row_indices,
                     "marker": _marker_halo,
-                    "name": "Halo Layer",
-                    "scatter_kwargs": kwargs
+                    "name": name,
+                    "scatter_kwargs": halo_kwargs
                 }
                 self.__new_layer(halo_layer)
 
@@ -252,6 +254,9 @@ class Pond:
                 "cmin": cb_cmin,
                 "cmax": cb_cmax,
             }
+
+        petal_kwargs = kwargs.copy()
+        petal_kwargs.setdefault("legendgroup", "petal")
         layer = {
             "object": "petal",
             "type": "scatter",
@@ -259,7 +264,7 @@ class Pond:
             "y_coords": row_indices,
             "marker": _marker,
             "name": name,
-            "scatter_kwargs": kwargs,
+            "scatter_kwargs": petal_kwargs,
             "colorbar": colorbar_config,
         }
         self.__new_layer(layer)
