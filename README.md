@@ -78,7 +78,7 @@ basin.legacy_pond().visualize_activation_map(width=1000);
 basin.pond() \
     .pad_layer() \
     .petal_layer() \
-    .visualize(width=1000);
+    .visualize(width=1200);
 ```
 
 ![](README_files/figure-commonmark/cell-7-output-1.png)
@@ -88,7 +88,7 @@ basin.pond() \
 basin.pond() \
     .rhizome_layer() \
     .pad_layer() \
-    .visualize(width=1000);
+    .visualize(width=1200);
 ```
 
 ![](README_files/figure-commonmark/cell-8-output-1.png)
@@ -99,7 +99,7 @@ basin.pond() \
 basin.pond() \
     .rhizome_layer(violations_only=True, neighborhood="von-neumann") \
     .pad_layer() \
-    .visualize(width=1000);
+    .visualize(width=1200);
 ```
 
 ![](README_files/figure-commonmark/cell-9-output-1.png)
@@ -109,7 +109,7 @@ basin.pond() \
 basin.pond() \
     .pad_layer() \
     .attraction_layer(X_scaled) \
-    .visualize(width=1000);
+    .visualize(width=1200);
 ```
 
 ![](README_files/figure-commonmark/cell-10-output-1.png)
@@ -122,7 +122,7 @@ basin.pond() \
     .rhizome_layer(min_width=3, max_width=18, colorscale="Greys") \
     .pad_layer(gap="nogap", min_fraction=.3) \
     .petal_layer(min_size=12, max_size=42, marker=dict(symbol="circle", opacity=.75), hide_halo=True) \
-    .visualize(width=1000);
+    .visualize(width=1200);
 ```
 
 ![](README_files/figure-commonmark/cell-11-output-1.png)
@@ -132,7 +132,7 @@ basin.pond() \
 basin.pond(base_style="iceflock") \
     .pad_layer() \
     .petal_layer() \
-    .visualize(width=1000);
+    .visualize(width=1200);
 ```
 
 ![](README_files/figure-commonmark/cell-12-output-1.png)
@@ -151,7 +151,7 @@ basin.pond(base_style="iceflock") \
         jitter_amount=.3,
         marker=custom_marker
     ) \
-    .visualize(width=1000);
+    .visualize(width=1200);
 ```
 
 ![](README_files/figure-commonmark/cell-13-output-1.png)
@@ -177,7 +177,7 @@ basin.pond(base_style="iceflock") \
         jitter_amount=.3,
         marker=custom_marker
     ) \
-    .visualize(width=1000);
+    .visualize(width=1200);
 ```
 
 ![](README_files/figure-commonmark/cell-14-output-1.png)
