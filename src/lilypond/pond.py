@@ -72,11 +72,13 @@ class Pond:
         if any(show_inds == True):
             unique_edges, counts = unique_b2mu_edges[show_inds], unique_b2mu_counts[show_inds]
 
-            counts_norm_1 = np.interp(counts, (counts.min(), counts.max()), (0, 1))
-            color_values = counts_norm_1
-
-            counts_norm_2 = np.interp(counts, (counts.min(), counts.max()), (min_width, max_width))
-            width_values = counts_norm_2
+            c_min, c_max = counts.min(), counts.max()
+            if c_max > c_min:
+                color_values = np.interp(counts, (c_min, c_max), (0, 1))
+                width_values = np.interp(counts, (c_min, c_max), (min_width, max_width))
+            else:
+                color_values = np.zeros_like(counts, dtype=float)
+                width_values = np.full(counts.shape, min_width, dtype=float)
 
             _colorscale = colorscale if colorscale is not None else self._base_style_config.rhizome_colorscale
             colors = px.colors.sample_colorscale(_colorscale, color_values)
