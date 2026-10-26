@@ -187,6 +187,11 @@ class Pond:
                 "cmin": cb_cmin,
                 "cmax": cb_cmax,
             }
+            if isinstance(color_by, dict):
+                if "tickvals" in color_by:
+                    colorbar_config["tickvals"] = color_by["tickvals"]
+                if "ticktext" in color_by:
+                    colorbar_config["ticktext"] = color_by["ticktext"]
 
         layer = {
             "object": "pad",
@@ -325,6 +330,10 @@ class Pond:
                 len=200,
                 thickness=12,
             )
+            if "tickvals" in cb_info and "ticktext" in cb_info:
+                cb_dict["tickmode"] = "array"
+                cb_dict["tickvals"] = cb_info["tickvals"]
+                cb_dict["ticktext"] = cb_info["ticktext"]
             cb_info["layout"] = cb_dict
 
             if layer["type"] == "shape":
