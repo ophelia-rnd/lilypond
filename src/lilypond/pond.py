@@ -1,10 +1,14 @@
 from __future__ import annotations
 
 import numpy as np
-import plotly.express as px
+import math
 
-from plotly import graph_objects as go
 from typing import Literal
+from collections import defaultdict
+
+import plotly.express as px
+from plotly import graph_objects as go
+
 from lilypond.basin import Basin
 from lilypond.pond_base_style import PondBaseStyle
 
@@ -48,6 +52,40 @@ class Pond:
         }
         self.__new_layer(layer)
         return self
+    
+    def __stabilize_projection_coords(self, scatter_layers: list[dict]) -> dict[int, tuple[np.ndarray, np.ndarray]]:
+        pad_groups = defaultdict(list)
+        layer_coords = {}
+        for layer in scatter_layers:
+            xc = np.array(layer["x_coords"], dtype=float)
+            yc = np.array(layer["y_coords"], dtype=float)
+            layer_coords[id(layer)] = (xc, yc)
+            if layer.get("object") == "attraction" and layer.get("jitter_amount", 0) > 0:
+                for i, (x, y) in enumerate(zip(xc, yc)):
+                    pad_groups[(round(float(x)), round(float(y)))].append((layer, i))
+
+        for (cx, cy), items in pad_groups.items():
+            n = len(items)
+            if n == 1:
+                layer, idx = items[0]
+                layer_coords[id(layer)][0][idx] = cx
+                layer_coords[id(layer)][1][idx] = cy
+            else:
+                jitter = max(layer.get("jitter_amount", 0.2) for layer, _ in items)
+                cols = math.ceil(math.sqrt(n))
+                rows = math.ceil(n / cols)
+                step_x = (2.0 * jitter) / (cols - 1) if cols > 1 else 0.0
+                step_y = (2.0 * jitter) / (rows - 1) if rows > 1 else 0.0
+                half_w = (cols - 1) * step_x / 2.0
+                half_h = (rows - 1) * step_y / 2.0
+                for rank, (layer, idx) in enumerate(items):
+                    r, c = rank // cols, rank % cols
+                    ox = -half_w + c * step_x if cols > 1 else 0.0
+                    oy = half_h - r * step_y if rows > 1 else 0.0
+                    layer_coords[id(layer)][0][idx] = cx + ox
+                    layer_coords[id(layer)][1][idx] = cy + oy
+
+        return layer_coords
 
     def _get_projection_coords(self, X):
         som = self.basin.som_representation.som
@@ -356,17 +394,10 @@ class Pond:
         scatter_layers = [layer for layer in self._layers if layer["type"] == "scatter"]
         has_legend = any(layer.get("name") for layer in scatter_layers)
 
-        for layer in scatter_layers:
-            x_coords, y_coords = layer["x_coords"], layer["y_coords"]
+        layer_coords = self.__stabilize_projection_coords(scatter_layers)
 
-            if layer["object"] == "attraction":
-                jitter_amount = layer["jitter_amount"]
-                if jitter_amount > 0:
-                    rng = np.random.default_rng(self.basin.random_seed)
-                    x_jitter = rng.uniform(-jitter_amount, jitter_amount, size=x_coords.shape)
-                    y_jitter = rng.uniform(-jitter_amount, jitter_amount, size=y_coords.shape)
-                    x_coords = x_coords + x_jitter
-                    y_coords = y_coords + y_jitter
+        for layer in scatter_layers:
+            x_coords, y_coords = layer_coords.get(id(layer), (layer["x_coords"], layer["y_coords"]))
 
             marker = layer["marker"].copy() if isinstance(layer.get("marker"), dict) else layer.get("marker")
             if layer.get("colorbar") is not None:
