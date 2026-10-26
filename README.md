@@ -148,7 +148,7 @@ basin.pond(base_style="iceflock") \
     .pad_layer() \
     .attraction_layer(
         X_scaled,
-        jitter_amount=.3,
+        jitter_amount=.25,
         marker=custom_marker
     ) \
     .visualize(width=1200);
@@ -174,7 +174,7 @@ basin.pond(base_style="iceflock") \
     ) \
     .attraction_layer(
         X_scaled_selected,
-        jitter_amount=.3,
+        jitter_amount=.25,
         marker=custom_marker
     ) \
     .visualize(width=1200);
