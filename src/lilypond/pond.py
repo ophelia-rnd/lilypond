@@ -86,6 +86,10 @@ class Pond:
                     layer_coords[id(layer)][1][idx] = cy + oy
 
         return layer_coords
+    
+    def __calc_quantization_errors(self, X):
+        X = np.asarray(X)
+        return np.linalg.norm(self.basin.som_representation.som.quantization(X) - X, axis=1)
 
     def _get_projection_coords(self, X):
         som = self.basin.som_representation.som
@@ -314,9 +318,40 @@ class Pond:
 
         return self
 
-    def attraction_layer(self, X, jitter_amount=0.2, name="Projection", marker=None, **kwargs):
+    def attraction_layer(self, X, jitter_amount=0.2, color_by_quantization_error=False, name="Projection", colorscale=None, marker=None, show_colorbar=True, colorbar_title=None, **kwargs):
         default_marker = dict(color="red", size=10, symbol="circle")
-        if marker: default_marker.update(marker)
+        colorbar_config = None
+
+        if color_by_quantization_error:
+            _colorscale = colorscale if colorscale is not None else "Spectral_r"
+            quantization_errors = self.__calc_quantization_errors(X)
+            qe_marker = dict(
+                color=quantization_errors,
+                colorscale=_colorscale,
+                showscale=False,
+                line=dict(width=1, color="black"),
+            )
+            default_marker.update(qe_marker)
+
+            qe_min, qe_max = float(quantization_errors.min()), float(quantization_errors.max())
+            if qe_max > qe_min:
+                cb_cmin, cb_cmax = qe_min, qe_max
+            else:
+                delta = abs(qe_min) * 0.01 if qe_min != 0.0 else 0.01
+                cb_cmin, cb_cmax = qe_min - delta, qe_max + delta
+
+            if show_colorbar and _colorscale:
+                default_title = "Quantization Error"
+                colorbar_config = {
+                    "title": colorbar_title if colorbar_title is not None else default_title,
+                    "colorscale": _colorscale,
+                    "cmin": cb_cmin,
+                    "cmax": cb_cmax,
+                }
+
+        if marker:
+            default_marker.update(marker)
+
         x_coords, y_coords = self._get_projection_coords(X)
         layer = {
             "object": "attraction",
@@ -326,7 +361,8 @@ class Pond:
             "y_coords": y_coords,
             "marker": default_marker,
             "name": name,
-            "scatter_kwargs": kwargs
+            "scatter_kwargs": kwargs,
+            "colorbar": colorbar_config,
         }
         self.__new_layer(layer)
         return self
@@ -341,7 +377,7 @@ class Pond:
         ]
         fig.update_layout(shapes=shapes)
 
-        order = {"rhizome": 1, "pad": 2, "petal": 3}
+        order = {"rhizome": 1, "pad": 2, "petal": 3, "attraction": 4}
         colorbar_layers = sorted(
             [layer for layer in self._layers if layer.get("colorbar") is not None],
             key=lambda l: order.get(l.get("object"), 99)
@@ -352,6 +388,7 @@ class Pond:
             1: [0.60],
             2: [0.80, 0.40],
             3: [0.92, 0.60, 0.28],
+            4: [0.95, 0.70, 0.45, 0.20],
         }.get(num_cbs, [0.95 - i * (0.75 / max(num_cbs - 1, 1)) for i in range(num_cbs)])
 
         # Assign colorbar layout dict to each layer and add dummy traces for shape layers
@@ -431,7 +468,9 @@ class Pond:
             margin=dict(r=260) if colorbar_layers or has_legend else dict(),
         )
 
-        if num_cbs >= 3:
+        if num_cbs >= 4:
+            args["height"] = max(640, int(rows * 50))
+        elif num_cbs >= 3:
             args["height"] = max(580, int(rows * 50))
         if "legend" in layout_kwargs and isinstance(layout_kwargs.get("legend"), dict):
             args.setdefault("legend", {}).update(layout_kwargs["legend"])
