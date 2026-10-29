@@ -124,17 +124,16 @@ basin.pond(base_style="iceflock") \
 ```
 
 ```{python}
-# use the quantization error measured from best-matching unit as the color of the projected sample
+# use the quantization error (distance from representation) measured from best-matching unit
+#   as the color of the projected sample
 
-import numpy as np
-X_quantization_errors = np.linalg.norm(basin.som_representation.som.quantization(X_scaled) - X_scaled, axis=1)
-custom_marker = dict(opacity=.85, size=16, color=X_quantization_errors, colorscale="Spectral_r", line=dict(width=1, color="black"))
+custom_marker = dict(opacity=.85, size=16)
 
 basin.pond(base_style="iceflock") \
     .pad_layer() \
     .attraction_layer(
         X_scaled,
-        jitter_amount=.25,
+        color_by_quantization_error=True,
         marker=custom_marker
     ) \
     .visualize(width=1200);
